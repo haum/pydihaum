@@ -27,9 +27,9 @@ class Log(models.Model):
     card = models.ForeignKey(Card, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     unknown_card = models.CharField(blank=True, null=True, max_length=255)
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     comment = models.CharField(blank=True, null=True, max_length=255)
 
     def __str__(self):
-        return str(self.user) + 'at ' + str(self.created_at)
+        return str(self.user) + ' at ' + str(self.created_at)
