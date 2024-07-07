@@ -124,6 +124,12 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # MQTT
-MQTT_HOST = 'broker.lan'
+MQTT_HOST = '192.168.0.1'
 MQTT_PORT = 1883
 MQTT_KEEPALIVE = 60
+
+try:
+    from .local_settings import *
+except:
+    pass
+
