@@ -14,6 +14,7 @@ class LogAdmin(admin.ModelAdmin):
     list_display = ('id', 'created_at', 'user', 'card_or_unknown_card', 'comment')
     list_filter = ('created_at',)
     search_fields = ('user__name', 'comment')
+    list_display_links = ('created_at',)
 
     def card_or_unknown_card(self, obj):
         if obj.card:
