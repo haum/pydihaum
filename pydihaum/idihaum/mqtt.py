@@ -47,9 +47,8 @@ def on_message(mqtt_client, userdata, msg):
 
 def initialize_mqtt():
     client = mqtt.Client()
-    mqtt_user, mqtt_pass = getattr(settings, 'MQTT_USER', False), getattr(settings, 'MQTT_PASS', False)
-    if mqtt_user and mqtt_pass:
-       client.username_pw_set(mqtt_user, mqtt_pass )
+    mqtt_user, mqtt_pass = getattr(settings, 'MQTT_USER', None), getattr(settings, 'MQTT_PASS', None)
+    client.username_pw_set(mqtt_user, mqtt_pass )
 
     client.on_connect = on_connect
     client.on_message = on_message
