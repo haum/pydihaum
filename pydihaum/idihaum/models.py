@@ -33,3 +33,29 @@ class Log(models.Model):
 
     def __str__(self):
         return str(self.user) + ' at ' + str(self.created_at)
+
+
+class Pub_Topic(models.Model):
+    topic_pub = models.CharField(unique=True, max_length=255)
+    message_to_pub = models.CharField(unique=True, max_length=255)
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    label = models.CharField(max_length=255)
+
+    def __str__(self):
+        return str(self.topic_pub)
+
+
+class Sub_Topic(models.Model):
+    topic_sub = models.CharField(unique=True, max_length=255)
+    active = models.BooleanField(default=True)
+    pub_Answer = models.ForeignKey(Pub_Topic, on_delete=models.DO_NOTHING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    label = models.CharField(max_length=255)
+
+    def __str__(self):
+        return str(self.topic_sub)
+
+

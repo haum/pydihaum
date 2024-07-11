@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Card, User, Log
+from .models import Card, User, Log , Pub_Topic, Sub_Topic
 
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
@@ -27,5 +27,19 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'active', 'updated_at')
     list_filter = ('active',)
     search_fields = ('name',)
+    list_editable = ('active', )
+
+@admin.register (Sub_Topic)
+class sub_topicAdmin(admin.ModelAdmin):
+    list_display = ('id', 'topic_sub' , 'active', 'pub_Answer','updated_at')
+    list_filter = ('active',)
+    search_fields = ('topic_sub',)
+    list_editable = ('active', )
+
+@admin.register (Pub_Topic)
+class pub_topicAdmin(admin.ModelAdmin):
+    list_display = ('id', 'topic_pub' , 'message_to_pub','active', 'updated_at')
+    list_filter = ('active',)
+    search_fields = ('topic_pub',)
     list_editable = ('active', )
 
