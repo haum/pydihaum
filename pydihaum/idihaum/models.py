@@ -58,4 +58,13 @@ class Sub_Topic(models.Model):
     def __str__(self):
         return str(self.topic_sub)
 
+class Access_reader(models.Model):
+    label = models.CharField(max_length=255)
+    active = models.BooleanField(default=True)
+    Id_topic = models.CharField(max_length=255) # topic recevant l ID de la carte
+    Answer_topic = models.CharField(max_length=255) # topic action du reader
+    Message_topic = models.CharField(max_length=255) # message pour action du reader
+
+    def __str__(self):
+        return str(self.label)
 
