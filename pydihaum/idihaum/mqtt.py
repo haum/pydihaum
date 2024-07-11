@@ -20,7 +20,7 @@ from .models import Card, User, Log
 def on_connect(mqtt_client, userdata, flags, rc):
    if rc == 0:
        print('Connected successfully')
-       mqtt_client.subscribe('haum/gachaum/tag/uid')
+       mqtt_client.subscribe('haum/#')
    else:
        print('Bad connection. Code:', rc)
 
