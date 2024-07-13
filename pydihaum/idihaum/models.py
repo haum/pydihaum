@@ -1,11 +1,21 @@
 from django.db import models
 
+class Access_reader(models.Model):
+    label = models.CharField(max_length=255)
+    active = models.BooleanField(default=True)
+    Id_topic = models.CharField(max_length=255) # topic recevant l ID de la carte
+    Answer_topic = models.CharField(max_length=255) # topic action du reader
+    Message_topic = models.CharField(max_length=255) # message pour action du reader
+
+    def __str__(self):
+        return str(self.label)
 
 class User(models.Model):
     name = models.CharField(blank=True, null=True, max_length=255)
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    allowed_accesses = models.ManyToManyField(Access_reader)
 
     def __str__(self):
         return self.name
@@ -58,13 +68,4 @@ class Sub_Topic(models.Model):
     def __str__(self):
         return str(self.topic_sub)
 
-class Access_reader(models.Model):
-    label = models.CharField(max_length=255)
-    active = models.BooleanField(default=True)
-    Id_topic = models.CharField(max_length=255) # topic recevant l ID de la carte
-    Answer_topic = models.CharField(max_length=255) # topic action du reader
-    Message_topic = models.CharField(max_length=255) # message pour action du reader
-
-    def __str__(self):
-        return str(self.label)
 

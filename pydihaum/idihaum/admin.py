@@ -24,7 +24,7 @@ class LogAdmin(admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'active', 'updated_at')
+    list_display = ('id', 'name', 'active', 'updated_at')  #,'allowed_accesses'
     list_filter = ('active',)
     search_fields = ('name',)
     list_editable = ('active', )
