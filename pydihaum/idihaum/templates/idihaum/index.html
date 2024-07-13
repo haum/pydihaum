@@ -1,0 +1,21 @@
+{% if users_list %}
+    Users for IdiHaum: </br>
+    <ul>
+    {% for user in users_list %}
+        <li><a href="/user/{{ user.id }}/">{{ user.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No User.</p>
+{% endif %}
+</br></br>
+{% if reader_list %}
+    Reader for IdiHaum: </br>
+    <ul>
+    {% for reader in reader_list %}
+        <li><a href="/reader/{{ user.id }}/">{{ reader.label }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No Reader.</p>
+{% endif %}
