@@ -13,7 +13,7 @@
         <h1>{{ the_reader.label }} access matrix</h1>
         <table>
 	<tr>
-		<td><b>{{ the_reader.label }}</b>b></td>
+		<td><b>{{ the_reader.label }}</b></td>
 			{% for user in the_reader.user_set.all %}
 			<td><a href="/user/{{ user.id }}/">{{ user.name }}</a></td>
 			{% endfor %}
