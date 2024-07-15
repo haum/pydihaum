@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr-FR">
+<head>
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width">
+   <title>IdiHaum user matrix</title>
+   <link href="{% static 'idihaum/minimal-table.css' %}"rel="stylesheet" type="text/css">
+</head>
+    <body>
+		{% if the_user %}
+        <h1>{{ the_user.name }} access matrix</h1>
+        <table>
+			<td>{{ the_user.name }}</td>
+				{% for reader in the_user.allowed_accesses.all %}
+					<td><a href="/reader/{{ reader.id }}/">{{ reader.label }}</a></td>
+				{% endfor %}
+        </table>
+        {% else %}
+			no user
+        {% endif %}
+    </body>
+</html>
