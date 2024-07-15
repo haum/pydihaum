@@ -12,11 +12,16 @@
 	{% if the_reader %}
         <h1>{{ the_reader.label }} access matrix</h1>
         <table>
-		<td>{{ the_reader.label }}</td>
+	<tr>
+		<td><b>{{ the_reader.label }}</b>b></td>
 			{% for user in the_reader.user_set.all %}
-				<td><a href="/user/{{ user.id }}/">{{ user.name }}</a></td>
+			<td><a href="/user/{{ user.id }}/">{{ user.name }}</a></td>
 			{% endfor %}
-        </table>
+		</tr>
+	</table>
+	<b>the_reader.Id_topic </b>{{the_reader.Id_topic}}</br>
+	<b>the_reader.Answer_topic </b>{{the_reader.Answer_topic}}</br>
+	<b>the_reader.Message_topic </b>{{the_reader.Message_topic}}
         {% else %}
 		no reader
         {% endif %}
