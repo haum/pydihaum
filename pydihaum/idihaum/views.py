@@ -4,6 +4,7 @@ from django.template import loader
 
 from .models import Access_reader, User
 
+
 def index(request):
     users_list = User.objects.all()
     reader_list = Access_reader.objects.all()
