@@ -20,8 +20,12 @@ def index(request):
 
 def reader(request, reader_id):
     The_Reader = Access_reader.objects.get(id=reader_id)
-    output = The_Reader.label
-    return HttpResponse(output) # ("Info for Reader %s." % reader_id)
+    template = loader.get_template("idihaum/reader.html")
+    context = {
+		"the_reader": The_Reader,
+    }
+    return HttpResponse(template.render(context, request))
+
 
 def user (request, user_id):
     The_User = User.objects.get(id = user_id)
