@@ -8,16 +8,17 @@
    <link href="{% static 'idihaum/minimal-table.css' %}"rel="stylesheet" type="text/css">
 </head>
     <body>
-		{% if the_user %}
+	<a href="/"> <- index</a>
+	{% if the_user %}
         <h1>{{ the_user.name }} access matrix</h1>
         <table>
-			<td>{{ the_user.name }}</td>
-				{% for reader in the_user.allowed_accesses.all %}
-					<td><a href="/reader/{{ reader.id }}/">{{ reader.label }}</a></td>
-				{% endfor %}
+		<td>{{ the_user.name }}</td>
+		{% for reader in the_user.allowed_accesses.all %}
+			<td><a href="/reader/{{ reader.id }}/">{{ reader.label }}</a></td>
+		{% endfor %}
         </table>
         {% else %}
-			no user
+		no user
         {% endif %}
     </body>
 </html>
