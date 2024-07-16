@@ -17,7 +17,7 @@ class User(models.Model):
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    allowed_accesses = models.ManyToManyField(Access_reader)
+    allowed_accesses = models.ManyToManyField(Access_reader, blank=True)
 
     def __str__(self):
         return self.name
@@ -38,6 +38,7 @@ class Card(models.Model):
 class Log(models.Model):
     card = models.ForeignKey(Card, null=True, on_delete=models.SET_NULL)
     user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    reader = models.ForeignKey(Access_reader, null=True, on_delete=models.SET_NULL)
     unknown_card = models.CharField(blank=True, null=True, max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
