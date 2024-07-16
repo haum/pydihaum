@@ -1,14 +1,16 @@
 from django.db import models
 
+
 class Access_reader(models.Model):
     label = models.CharField(max_length=255)
     active = models.BooleanField(default=True)
-    Id_topic = models.CharField(max_length=255) # topic recevant l ID de la carte
-    Answer_topic = models.CharField(max_length=255) # topic action du reader
-    Message_topic = models.CharField(max_length=255) # message pour action du reader
+    listen_topic = models.CharField(max_length=255) # topic recevant l ID de la carte
+    answer_topic = models.CharField(max_length=255) # topic action du reader
+    message_topic = models.CharField(max_length=255) # message pour action du reader
 
     def __str__(self):
         return str(self.label)
+
 
 class User(models.Model):
     name = models.CharField(blank=True, null=True, max_length=255)
@@ -43,29 +45,3 @@ class Log(models.Model):
 
     def __str__(self):
         return str(self.user) + ' at ' + str(self.created_at)
-
-
-class Pub_Topic(models.Model):
-    topic_pub = models.CharField(unique=True, max_length=255)
-    message_to_pub = models.CharField(unique=True, max_length=255)
-    active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    label = models.CharField(max_length=255)
-
-    def __str__(self):
-        return str(self.topic_pub)
-
-
-class Sub_Topic(models.Model):
-    topic_sub = models.CharField(unique=True, max_length=255)
-    active = models.BooleanField(default=True)
-    pub_Answer = models.ForeignKey(Pub_Topic, on_delete=models.DO_NOTHING)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    label = models.CharField(max_length=255)
-
-    def __str__(self):
-        return str(self.topic_sub)
-
-

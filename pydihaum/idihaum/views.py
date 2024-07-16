@@ -16,22 +16,21 @@ def index(request):
     }
     return HttpResponse(template.render(context, request))
 
-# Create your views here.
 
 def reader(request, reader_id):
-    The_Reader = Access_reader.objects.get(id=reader_id)
+    the_reader = Access_reader.objects.get(id=reader_id)
     template = loader.get_template("idihaum/reader.html")
     context = {
-		"the_reader": The_Reader,
+		"the_reader": the_reader,
     }
     return HttpResponse(template.render(context, request))
 
 
 def user (request, user_id):
-    The_User = User.objects.get(id = user_id)
+    the_user = User.objects.get(id = user_id)
     template = loader.get_template("idihaum/user.html")
     context = {
-		"the_user": The_User,
+		"the_user": the_user,
     }
     return HttpResponse(template.render(context, request))
 
