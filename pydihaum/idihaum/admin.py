@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from .models import Card, User, Log , Sub_Topic, Pub_Topic, Access_reader
+from .models import Card, User, Log, Access_reader
+
 
 @admin.register(Card)
 class CardAdmin(admin.ModelAdmin):
@@ -29,19 +30,6 @@ class UserAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_editable = ('active', )
 
-@admin.register (Sub_Topic)
-class sub_topicAdmin(admin.ModelAdmin):
-    list_display = ('id', 'topic_sub' , 'active', 'pub_Answer','updated_at')
-    list_filter = ('active',)
-    search_fields = ('topic_sub',)
-    list_editable = ('active', )
-
-@admin.register (Pub_Topic)
-class pub_topicAdmin(admin.ModelAdmin):
-    list_display = ('id', 'topic_pub' , 'message_to_pub','active', 'updated_at')
-    list_filter = ('active',)
-    search_fields = ('topic_pub',)
-    list_editable = ('active', )
 
 @admin.register (Access_reader)
 class Access_readerAdmin(admin.ModelAdmin):
