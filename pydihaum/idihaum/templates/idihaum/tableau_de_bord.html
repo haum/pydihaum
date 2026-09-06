@@ -1,0 +1,49 @@
+{% extends "idihaum/base.html" %}
+{% block titre %}Tableau de bord{% endblock %}
+{% block contenu %}
+<h1>Tableau de bord</h1>
+<p class="sous">État du contrôle d'accès et derniers passages.</p>
+
+{% if not porte_reelle %}
+<div class="avertissement">
+  Environnement de test : le bouton publie sur <code>{{ topic }}</code> et n'actionne pas
+  la vraie gâche.
+</div>
+{% endif %}
+
+<div class="chiffres">
+  <div class="chiffre"><b>{{ nb_membres }}</b><span>membres actifs</span>
+    {% if nb_membres_inactifs %}<span class="discret">+ {{ nb_membres_inactifs }} inactifs</span>{% endif %}</div>
+  <div class="chiffre"><b>{{ nb_cartes }}</b><span>cartes actives</span>
+    {% if nb_cartes_inactives %}<span class="discret">+ {{ nb_cartes_inactives }} inactives</span>{% endif %}</div>
+  <div class="chiffre"><b>{{ nb_passages_semaine }}</b><span>passages sur 7 jours</span></div>
+</div>
+
+<div class="carte" style="margin-top:16px">
+  <h2 style="margin:0 0 4px;font-size:18px">Ouvrir la porte</h2>
+  <p class="discret" style="margin:0 0 12px">
+    L'ouverture est enregistrée dans le journal avec votre identifiant.</p>
+  <form method="post" action="{% url 'idihaum:ouvrir_porte' %}">{% csrf_token %}
+    <button type="submit" class="principal porte">Ouvrir la porte</button>
+  </form>
+</div>
+
+<div class="carte">
+  <h2 style="margin:0 0 12px;font-size:18px">Derniers passages</h2>
+  <div class="defilant"><table>
+    <tr><th>Date</th><th>Qui</th><th>Carte</th><th>Détail</th></tr>
+    {% for l in derniers %}
+    <tr>
+      <td>{{ l.created_at|date:"d/m/Y H:i:s" }}</td>
+      <td>{% if l.user %}{{ l.user.name }}{% else %}<span class="discret">—</span>{% endif %}</td>
+      <td>{% if l.card %}{{ l.card.label|default:l.card.uid }}
+          {% elif l.unknown_card %}<span class="pastille p-refus">inconnue</span>
+            <a href="{% url 'idihaum:carte_nouvelle' %}?uid={{ l.unknown_card|urlencode }}">{{ l.unknown_card }}</a>
+          {% else %}<span class="discret">—</span>{% endif %}</td>
+      <td>{{ l.comment|default:"" }}</td>
+    </tr>
+    {% empty %}<tr><td colspan="4" class="discret">Aucun passage enregistré.</td></tr>{% endfor %}
+  </table></div>
+  <p class="pagination"><a href="{% url 'idihaum:journal' %}">Voir tout le journal →</a></p>
+</div>
+{% endblock %}

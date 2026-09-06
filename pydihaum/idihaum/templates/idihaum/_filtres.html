@@ -1,0 +1,15 @@
+{% comment %}
+Barre de filtres commune aux trois listes. La vue fournit `puces` (clé, libellé,
+effectif) et `etat` ; le lien reconduit la recherche en cours et repart page 1,
+puisque changer de filtre change le nombre de pages.
+
+Balise de commentaire longue et non la forme courte à dièses : celle-ci est
+mono-ligne, un commentaire à cheval sur plusieurs lignes s'affiche tel quel.
+{% endcomment %}
+<div class="filtres">
+  {% for p in puces %}
+  <a class="puce{% if p.choisie %} sel{% endif %}{% if p.alerte %} avert{% endif %}"
+     href="?etat={{ p.cle }}{% if q %}&amp;q={{ q|urlencode }}{% endif %}"
+     >{{ p.libelle }} <span class="n">{{ p.nombre }}</span></a>
+  {% endfor %}
+</div>

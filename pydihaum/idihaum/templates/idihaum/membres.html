@@ -1,0 +1,41 @@
+{% extends "idihaum/base.html" %}
+{% block titre %}Membres{% endblock %}
+{% block contenu %}
+<h1>Membres</h1>
+<p class="sous">{{ page.paginator.count }} membre{{ page.paginator.count|pluralize }}
+  {% if etat != 'tous' or q %}dans cette sélection{% else %}au total{% endif %}.</p>
+<div class="barre">
+  {% include "idihaum/_filtres.html" %}
+  <form method="get" class="enligne" style="margin-left:auto">
+    <input type="hidden" name="etat" value="{{ etat }}">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher un nom" style="width:210px">
+    <button type="submit">Rechercher</button>
+    {% if q %}<a class="bouton" href="?etat={{ etat }}">Effacer</a>{% endif %}
+  </form>
+  <a class="bouton principal" href="{% url 'idihaum:membre_nouveau' %}">Nouveau membre</a>
+</div>
+<div class="carte"><div class="defilant"><table>
+  <tr><th>Nom</th><th>État</th><th>Cartes actives</th><th>Modifié</th></tr>
+  {% for m in page %}
+  <tr {% if not m.active %}class="inactif"{% endif %}>
+    <td><a href="{% url 'idihaum:membre_edition' m.pk %}">{{ m.name|default:"(sans nom)" }}</a></td>
+    <td class="etat-cell">
+      {# La pastille est le bouton : un clic bascule l'état et revient exactement ici. #}
+      <form method="post" action="{% url 'idihaum:membre_bascule' m.pk %}" class="enligne">{% csrf_token %}
+        <input type="hidden" name="retour" value="{{ request.get_full_path }}">
+        <button type="submit" class="pastille {% if m.active %}p-ok{% else %}p-non{% endif %}"
+                title="Cliquer pour {% if m.active %}désactiver{% else %}réactiver{% endif %} {{ m.name }}"
+                >{% if m.active %}actif{% else %}inactif{% endif %}</button>
+      </form>
+    </td>
+    {# Actives sur total : un membre actif à 0 carte active ne peut pas entrer. #}
+    <td class="discret">{{ m.nb_cartes_actives }} sur {{ m.nb_cartes }}
+      {% if m.active and not m.nb_cartes_actives %}
+        <span class="pastille p-refus">n'ouvre pas</span>{% endif %}</td>
+    <td class="discret">{{ m.updated_at|date:"d/m/Y" }}</td>
+  </tr>
+  {% empty %}<tr><td colspan="4" class="discret">Aucun membre pour ce filtre.</td></tr>{% endfor %}
+</table></div>
+{% include "idihaum/_pagination.html" %}
+</div>
+{% endblock %}

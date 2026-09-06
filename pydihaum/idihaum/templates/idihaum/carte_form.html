@@ -1,0 +1,19 @@
+{% extends "idihaum/base.html" %}
+{% block titre %}{% if carte %}{{ carte.label|default:carte.uid }}{% else %}Nouvelle carte{% endif %}{% endblock %}
+{% block contenu %}
+<h1>{% if carte %}Modifier une carte{% else %}Nouvelle carte{% endif %}</h1>
+<p class="sous">{% if carte %}Créée le {{ carte.created_at|date:"d/m/Y" }}.{% else %}
+  Pour relever l'UID d'une carte neuve : la badger, puis la retrouver dans le journal
+  parmi les cartes inconnues.{% endif %}</p>
+<div class="carte" style="max-width:520px">
+  <form method="post">{% csrf_token %}
+    {# Reporté depuis la fiche du membre, pour y revenir après l'enregistrement. #}
+    {% if retour %}<input type="hidden" name="retour" value="{{ retour }}">{% endif %}
+    {% include "idihaum/_champs.html" %}
+    <p style="margin-top:18px">
+      <button type="submit" class="principal">Enregistrer</button>
+      <a class="bouton" href="{% if retour %}{{ retour }}{% else %}{% url 'idihaum:cartes' %}{% endif %}">Annuler</a>
+    </p>
+  </form>
+</div>
+{% endblock %}

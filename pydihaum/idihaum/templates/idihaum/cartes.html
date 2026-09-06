@@ -1,0 +1,44 @@
+{% extends "idihaum/base.html" %}
+{% block titre %}Cartes{% endblock %}
+{% block contenu %}
+<h1>Cartes</h1>
+<p class="sous">{{ page.paginator.count }} carte{{ page.paginator.count|pluralize }}
+  {% if etat != 'toutes' or q %}dans cette sélection{% else %}au total{% endif %}, classées par numéro.</p>
+<div class="barre">
+  {% include "idihaum/_filtres.html" %}
+  <form method="get" class="enligne" style="margin-left:auto">
+    <input type="hidden" name="etat" value="{{ etat }}">
+    <input type="text" name="q" value="{{ q }}" placeholder="UID, libellé ou membre" style="width:210px">
+    <button type="submit">Rechercher</button>
+    {% if q %}<a class="bouton" href="?etat={{ etat }}">Effacer</a>{% endif %}
+  </form>
+  <a class="bouton principal" href="{% url 'idihaum:carte_nouvelle' %}">Nouvelle carte</a>
+</div>
+{% if etat == 'bloquees' %}
+<p class="avertissement">Ces cartes sont marquées actives mais leur membre est désactivé :
+  le lecteur les refuse (« Denied: inactive user »). Réactiver le membre, ou
+  désactiver la carte pour que son état dise la vérité.</p>
+{% endif %}
+<div class="carte"><div class="defilant"><table>
+  <tr><th>Libellé</th><th>État</th><th>Membre</th><th>UID</th></tr>
+  {% for c in page %}
+  <tr {% if not c.active %}class="inactif"{% endif %}>
+    <td><a href="{% url 'idihaum:carte_edition' c.pk %}">{{ c.label|default:"(sans libellé)" }}</a></td>
+    <td class="etat-cell">
+      <form method="post" action="{% url 'idihaum:carte_bascule' c.pk %}" class="enligne">{% csrf_token %}
+        <input type="hidden" name="retour" value="{{ request.get_full_path }}">
+        <button type="submit" class="pastille {% if c.active %}p-ok{% else %}p-non{% endif %}"
+                title="Cliquer pour {% if c.active %}désactiver{% else %}réactiver{% endif %} cette carte"
+                >{% if c.active %}active{% else %}inactive{% endif %}</button>
+      </form>
+    </td>
+    <td>{% if c.user %}{{ c.user.name }}{% if not c.user.active %}
+          <span class="pastille p-non">membre inactif</span>{% endif %}
+        {% else %}<span class="discret">—</span>{% endif %}</td>
+    <td class="discret"><code>{{ c.uid }}</code></td>
+  </tr>
+  {% empty %}<tr><td colspan="4" class="discret">Aucune carte pour ce filtre.</td></tr>{% endfor %}
+</table></div>
+{% include "idihaum/_pagination.html" %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% comment %}
+Rendu commun des champs de formulaire. Les booléens sortent en interrupteur :
+l'input reste un vrai <input type=checkbox> (accessible, focusable, sans JavaScript),
+il est simplement masqué et donne son état à la piste qui le suit via :checked.
+{% endcomment %}
+{% for champ in form %}
+  {% if champ.field.widget.input_type == 'checkbox' %}
+    <label class="interrupteur">{{ champ }}<span class="piste"></span>
+      <span>{{ champ.label }}</span></label>
+  {% else %}
+    <label for="{{ champ.id_for_label }}">{{ champ.label }}</label>
+    {{ champ }}
+  {% endif %}
+  {% if champ.help_text %}<p class="aide">{{ champ.help_text }}</p>{% endif %}
+  {{ champ.errors }}
+{% endfor %}
