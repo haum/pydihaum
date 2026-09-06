@@ -1,0 +1,45 @@
+{% extends "idihaum/base.html" %}
+{% block titre %}{% if membre %}{{ membre.name }}{% else %}Nouveau membre{% endif %}{% endblock %}
+{% block contenu %}
+<h1>{% if membre %}Modifier un membre{% else %}Nouveau membre{% endif %}</h1>
+<p class="sous">{% if membre %}Créé le {{ membre.created_at|date:"d/m/Y" }}.{% else %}
+  Le membre pourra ensuite recevoir une ou plusieurs cartes.{% endif %}</p>
+
+<div class="carte" style="max-width:520px">
+  <form method="post">{% csrf_token %}
+    {% include "idihaum/_champs.html" %}
+    <p style="margin-top:18px">
+      <button type="submit" class="principal">Enregistrer</button>
+      <a class="bouton" href="{% url 'idihaum:membres' %}">Annuler</a>
+    </p>
+  </form>
+</div>
+
+{% if membre %}
+<div class="carte" style="max-width:520px">
+  <div class="barre" style="margin-bottom:4px">
+    <h2 style="margin:0;font-size:16px;margin-right:auto">Cartes de ce membre</h2>
+    <a class="bouton" href="{% url 'idihaum:carte_nouvelle' %}?user={{ membre.pk }}&amp;retour={{ request.get_full_path|urlencode }}">Ajouter une carte</a>
+  </div>
+  <table>
+    {% for c in cartes %}
+    <tr {% if not c.active %}class="inactif"{% endif %}>
+      <td><a href="{% url 'idihaum:carte_edition' c.pk %}">{{ c.label|default:c.uid }}</a></td>
+      <td class="etat-cell" style="text-align:right">
+        {# Désactivable ici même : inutile de passer par la liste des cartes. #}
+        <form method="post" action="{% url 'idihaum:carte_bascule' c.pk %}" class="enligne">{% csrf_token %}
+          <input type="hidden" name="retour" value="{{ request.get_full_path }}">
+          <button type="submit" class="pastille {% if c.active %}p-ok{% else %}p-non{% endif %}"
+                  title="Cliquer pour {% if c.active %}désactiver{% else %}réactiver{% endif %} cette carte"
+                  >{% if c.active %}active{% else %}inactive{% endif %}</button>
+        </form>
+      </td>
+    </tr>
+    {% empty %}<tr><td class="discret">Aucune carte associée.</td></tr>{% endfor %}
+  </table>
+  <p class="discret" style="margin-top:10px">
+    Un membre ne se supprime pas : ses cartes et son historique de passages y font
+    référence. Le désactiver refuse l'accès en conservant la traçabilité.</p>
+</div>
+{% endif %}
+{% endblock %}

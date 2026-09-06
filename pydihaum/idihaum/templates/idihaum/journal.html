@@ -1,0 +1,33 @@
+{% extends "idihaum/base.html" %}
+{% block titre %}Journal{% endblock %}
+{% block contenu %}
+<h1>Journal des accès</h1>
+<p class="sous">{{ page.paginator.count }} entrée{{ page.paginator.count|pluralize }}
+  {% if etat != 'tous' or q %}dans cette sélection{% endif %}.</p>
+<div class="barre">
+  {% include "idihaum/_filtres.html" %}
+  <form method="get" class="enligne" style="margin-left:auto">
+    <input type="hidden" name="etat" value="{{ etat }}">
+    <input type="text" name="q" value="{{ q }}" placeholder="Rechercher" style="width:200px">
+    <button type="submit">Rechercher</button>
+    {% if q %}<a class="bouton" href="?etat={{ etat }}">Effacer</a>{% endif %}
+  </form>
+</div>
+<div class="carte"><div class="defilant"><table>
+  <tr><th>Date</th><th>Membre</th><th>Carte</th><th>Détail</th></tr>
+  {% for l in page %}
+  <tr>
+    <td style="white-space:nowrap">{{ l.created_at|date:"d/m/Y H:i:s" }}</td>
+    <td>{% if l.user %}<a href="{% url 'idihaum:membre_edition' l.user.pk %}">{{ l.user.name }}</a>
+        {% else %}<span class="discret">—</span>{% endif %}</td>
+    <td>{% if l.card %}<a href="{% url 'idihaum:carte_edition' l.card.pk %}">{{ l.card.label|default:l.card.uid }}</a>
+        {% elif l.unknown_card %}<span class="pastille p-refus">inconnue</span>
+          <a href="{% url 'idihaum:carte_nouvelle' %}?uid={{ l.unknown_card|urlencode }}"><code>{{ l.unknown_card }}</code></a>
+        {% else %}<span class="discret">—</span>{% endif %}</td>
+    <td>{{ l.comment|default:"" }}</td>
+  </tr>
+  {% empty %}<tr><td colspan="4" class="discret">Aucune entrée pour ce filtre.</td></tr>{% endfor %}
+</table></div>
+{% include "idihaum/_pagination.html" %}
+</div>
+{% endblock %}

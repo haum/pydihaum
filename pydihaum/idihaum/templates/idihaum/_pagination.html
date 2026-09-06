@@ -1,0 +1,15 @@
+{% comment %}
+`params` = la requête courante sans `page` : le filtre et la recherche
+survivent au changement de page.
+{% endcomment %}
+{% if page.has_other_pages %}
+<p class="pagination">
+  {% if page.has_previous %}
+    <a href="?{% if params %}{{ params }}&amp;{% endif %}page={{ page.previous_page_number }}">← précédent</a>
+  {% endif %}
+  page {{ page.number }} sur {{ page.paginator.num_pages }}
+  {% if page.has_next %}
+    <a href="?{% if params %}{{ params }}&amp;{% endif %}page={{ page.next_page_number }}">suivant →</a>
+  {% endif %}
+</p>
+{% endif %}

@@ -1,0 +1,150 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="{% static 'idihaum/favicon.ico' %}">
+<title>{% block titre %}Contrôle d'accès{% endblock %} — HAUM</title>
+<style>
+ :root{
+   --fond:#f4f5f3; --carte:#fff; --encre:#1b1f1a; --doux:#5c6459; --trait:#dcdfd7;
+   --accent:#4a6d2f; --accent-clair:#eaf0e0;
+   --ok:#2f6b4c; --alerte:#a33327; --attention:#8a6410;
+   --ok-fond:#e3efe8; --non-fond:#eceee9; --refus-fond:#f8e5e2;
+ }
+ @media (prefers-color-scheme:dark){
+   :root{
+     --fond:#14170f; --carte:#1c2017; --encre:#e8ebe1; --doux:#9aa392; --trait:#2d3326;
+     --accent:#a3c766; --accent-clair:#232a17;
+     --ok:#79be95; --alerte:#e8877a; --attention:#ddaf56;
+     --ok-fond:#17271d; --non-fond:#22261d; --refus-fond:#2e1d19;
+   }
+ }
+ *{box-sizing:border-box}
+ body{margin:0;background:var(--fond);color:var(--encre);
+      font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+ a{color:var(--accent)}
+ header{background:var(--carte);border-bottom:1px solid var(--trait)}
+ .bandeau{max-width:1000px;margin:0 auto;padding:10px 16px;display:flex;
+          align-items:center;gap:16px;flex-wrap:wrap}
+ .marque{display:flex;align-items:center;gap:12px;margin-right:auto;
+         font-weight:700;letter-spacing:-.01em;text-decoration:none;color:var(--encre)}
+ .logo{height:34px;width:auto;display:block}
+ /* Le logo est en gris foncé sur fond transparent : sur un fond sombre il
+    disparaîtrait. L'inversion éclaircit, et la rotation de teinte qui suit
+    rattrape le rouge du sous-titre — une simple inversion le rendrait cyan. */
+ @media (prefers-color-scheme:dark){.logo{filter:invert(1) hue-rotate(180deg)}}
+ nav a{display:inline-block;padding:6px 10px;border-radius:5px;text-decoration:none;
+       color:var(--doux);font-size:15px}
+ nav a.actif,nav a:hover{background:var(--accent-clair);color:var(--accent)}
+ main{max-width:1000px;margin:0 auto;padding:20px 16px 60px}
+ h1{font-size:24px;margin:0 0 4px}
+ .sous{color:var(--doux);margin:0 0 20px}
+ .carte{background:var(--carte);border:1px solid var(--trait);border-radius:8px;padding:16px;margin-bottom:16px}
+ table{width:100%;border-collapse:collapse;font-size:15px}
+ th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.06em;
+    color:var(--doux);padding:6px 8px;border-bottom:1px solid var(--trait)}
+ td{padding:8px;border-bottom:1px solid var(--trait);vertical-align:middle}
+ tr:last-child td{border-bottom:none}
+ .defilant{overflow-x:auto}
+ /* L'état se lit au fond autant qu'à la couleur du texte : dans une liste de
+    58 lignes, une nuance de gris sur gris ne se voit pas. */
+ .pastille{display:inline-block;font-family:inherit;font-size:12.5px;font-weight:600;
+           line-height:1.35;padding:3px 10px;border-radius:20px;
+           border:1px solid transparent;white-space:nowrap}
+ .p-ok{color:var(--ok);background:var(--ok-fond);border-color:var(--ok)}
+ .p-non{color:var(--doux);background:var(--non-fond);border-color:var(--trait)}
+ .p-refus{color:var(--alerte);background:var(--refus-fond);border-color:var(--alerte)}
+ /* La pastille EST le bouton : un clic bascule l'état, pas de bouton en bout de ligne.
+    Le survol s'annonce par la couleur seule — jamais par un texte ajouté, qui
+    élargirait la pastille et ferait sauter la mise en page sous le curseur. */
+ button.pastille{cursor:pointer}
+ button.p-ok:hover,button.p-ok:focus-visible{background:var(--ok);color:var(--carte);border-color:var(--ok)}
+ button.p-non:hover,button.p-non:focus-visible{background:var(--doux);color:var(--carte);border-color:var(--doux)}
+ button.pastille:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+ tr.inactif td:not(.etat-cell){opacity:.5}
+
+ /* Interrupteur, à la place de la case à cocher des formulaires. */
+ .interrupteur{display:inline-flex;align-items:center;gap:11px;cursor:pointer;
+               font-weight:600;font-size:15px;margin:14px 0 4px;user-select:none}
+ .interrupteur input{position:absolute;opacity:0;width:0;height:0}
+ .piste{position:relative;width:46px;height:26px;border-radius:26px;flex:none;
+        background:var(--trait);transition:background .15s ease}
+ .piste::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;
+               border-radius:50%;background:var(--carte);
+               box-shadow:0 1px 3px rgba(0,0,0,.3);transition:transform .15s ease}
+ .interrupteur input:checked + .piste{background:var(--accent)}
+ .interrupteur input:checked + .piste::after{transform:translateX(20px)}
+ .interrupteur input:focus-visible + .piste{outline:2px solid var(--accent);outline-offset:3px}
+ @media (prefers-reduced-motion:reduce){.piste,.piste::after{transition:none}}
+ .bouton,button,input[type=submit]{font:inherit;padding:8px 14px;border-radius:6px;
+   border:1px solid var(--trait);background:var(--carte);color:var(--encre);
+   cursor:pointer;text-decoration:none;display:inline-block}
+ .bouton:hover,button:hover{border-color:var(--accent);color:var(--accent)}
+ .principal{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
+ .principal:hover{opacity:.9;color:#fff}
+ .porte{font-size:18px;padding:14px 22px}
+ input[type=text],input[type=password],select{font:inherit;padding:8px 10px;
+   border:1px solid var(--trait);border-radius:6px;background:var(--fond);
+   color:var(--encre);width:100%;max-width:420px}
+ label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+ .aide,.errorlist{font-size:13px;color:var(--doux);margin:4px 0}
+ .errorlist{color:var(--alerte);list-style:none;padding:0}
+ .msg{padding:10px 14px;border-radius:6px;margin-bottom:14px;border:1px solid}
+ .msg.success{color:var(--ok);border-color:var(--ok);background:transparent}
+ .msg.error{color:var(--alerte);border-color:var(--alerte)}
+ .msg.warning{color:var(--attention);border-color:var(--attention)}
+ .chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+ .chiffre{background:var(--carte);border:1px solid var(--trait);border-radius:8px;padding:14px}
+ .chiffre b{display:block;font-size:28px;line-height:1.1}
+ .chiffre span{color:var(--doux);font-size:13px}
+ .barre{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+ /* Filtres de liste. Chaque puce porte son effectif : on voit le nombre de
+    cartes bloquées sans avoir à cliquer dessus. Le choix courant se peint en
+    accent, avec le texte en couleur de carte — du blanc pur serait illisible
+    sur le vert clair du thème sombre. */
+ .filtres{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+ .puce{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border-radius:20px;
+       border:1px solid var(--trait);background:var(--carte);color:var(--doux);
+       text-decoration:none;font-size:14px;font-weight:600;line-height:1.4;white-space:nowrap}
+ .puce:hover{border-color:var(--accent);color:var(--accent)}
+ .puce .n{font-size:12px;font-weight:700;padding:0 7px;border-radius:10px;
+          background:var(--non-fond);color:var(--doux)}
+ .puce.sel{background:var(--accent);border-color:var(--accent);color:var(--carte)}
+ .puce.sel .n{background:var(--carte);color:var(--accent)}
+ /* Effectif à signaler et non nul : la puce annonce le problème avant le clic. */
+ .puce.avert .n{background:var(--refus-fond);color:var(--alerte)}
+ .puce.avert.sel .n{background:var(--carte);color:var(--alerte)}
+ .pagination{margin-top:14px;color:var(--doux);font-size:14px}
+ .avertissement{border:1px solid var(--attention);color:var(--attention);
+                padding:10px 14px;border-radius:6px;margin-bottom:16px;font-size:14px}
+ .discret{color:var(--doux);font-size:13px}
+ form.enligne{display:inline}
+</style>
+</head>
+<body>
+{% if user.is_authenticated %}
+<header><div class="bandeau">
+  <a class="marque" href="{% url 'idihaum:tableau_de_bord' %}">
+    <img src="{% static 'idihaum/haum.png' %}" alt="HAUM — Hackerspace AU Mans" class="logo">
+    <span>Contrôle d'accès</span>
+  </a>
+  <nav>
+    <a href="{% url 'idihaum:tableau_de_bord' %}">Tableau de bord</a>
+    <a href="{% url 'idihaum:membres' %}">Membres</a>
+    <a href="{% url 'idihaum:cartes' %}">Cartes</a>
+    <a href="{% url 'idihaum:journal' %}">Journal</a>
+  </nav>
+  <form method="post" action="{% url 'logout' %}" class="enligne">{% csrf_token %}
+    <button type="submit">Déconnexion ({{ user.username }})</button>
+  </form>
+</div></header>
+{% endif %}
+<main>
+  {% if messages %}{% for m in messages %}
+    <div class="msg {{ m.tags }}">{{ m }}</div>
+  {% endfor %}{% endif %}
+  {% block contenu %}{% endblock %}
+</main>
+</body>
+</html>
